@@ -56,10 +56,11 @@ public class DaoUser {
             String pass2 = md5(pass);
             connectBD.connect();
             Statement comando = connectBD.getConnection().createStatement();
-            ResultSet rs = comando.executeQuery("SELECT * FROM user where email='" + email + "' and password='" + pass2 + "'");
-            if (rs.next() == true) {
+           ResultSet rs = comando.executeQuery("SELECT * FROM user where email='" + email + "' and password='" + pass2 + "'");
+           if (rs.next() == true) {
                 nombre = rs.getString(1);
-            } else {
+            } 
+           else {
                 nombre = "No hay resgistros";
             }
 
@@ -121,6 +122,26 @@ public class DaoUser {
             connectBD.connect();
             Statement comando = connectBD.getConnection().createStatement();
             ResultSet rs = comando.executeQuery("SELECT * FROM user WHERE email='" + email + "'");
+
+            if (rs.next() == true) {
+                num= 7;
+            } else {
+                num= 0;
+            }
+            rs.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DaoUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return num;
+    }
+    
+     public int idUser(String id) {
+        int num=0;
+        try {
+            connectBD.connect();
+            Statement comando = connectBD.getConnection().createStatement();
+            ResultSet rs = comando.executeQuery("SELECT * FROM user WHERE id='" + id + "'");
 
             if (rs.next() == true) {
                 num= 7;

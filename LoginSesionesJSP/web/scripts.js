@@ -14,19 +14,19 @@ function newUser() {
     var title = document.createElement("h5");
     title.appendChild(document.createTextNode("Ingrese los datos del nuevo usuario"));
     formulario.appendChild(title);
-    
+
     formulario.appendChild(document.createTextNode("id: "));
     var txt = document.createElement("input");
     txt.setAttribute("id", "txtid");
     txt.setAttribute("placeholder", "Ingrese el id");
     formulario.appendChild(txt);
-    
+
     formulario.appendChild(document.createTextNode("Nombre: "));
     var txt = document.createElement("input");
     txt.setAttribute("id", "txtnombre");
     txt.setAttribute("placeholder", "Ingrese el nombre");
     formulario.appendChild(txt);
-    
+
     formulario.appendChild(document.createTextNode("Apellido: "));
     var txt = document.createElement("input");
     txt.setAttribute("id", "txtapellido");
@@ -61,7 +61,7 @@ function newUser() {
     var boton = document.createElement("button");
     boton.appendChild(document.createTextNode("Guardar"));
     boton.setAttribute("class", "waves-effect waves-light btn");
-    boton.setAttribute("onclick", "validateCorreo()");
+    boton.setAttribute("onclick", "validateId()");
 
     formulario.appendChild(boton);
     contenido.appendChild(formulario);
@@ -79,7 +79,6 @@ function validateUser() {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 var out = JSON.parse(xhr.responseText);
-                
                 if (out == "No hay resgistros") {
                     alert("Las credenciales suministradas no estan registradas");
                     newUser();
@@ -131,7 +130,7 @@ function hijos(id) {
     thr.appendChild(th);
     tabla.appendChild(thr);
 
-   
+
     xhr2.onreadystatechange = function () {
 
         if (xhr2.readyState === 4) {
@@ -155,99 +154,127 @@ function hijos(id) {
                     tabla.appendChild(thr);
                 }
             }, out);
-            
-             cont.appendChild(tabla);
+
+            cont.appendChild(tabla);
         }
     };
     xhr2.send(null);
 }
 
-function validateCorreo(){
+function validateCorreo() {
     var email = document.getElementById("txtemail").value;
-    var xhr=new XMLHttpRequest();
-    xhr.open("GET","ServletValidateCorreo?email="+email,true);
-    xhr.onreadystatechange=function (){
-        if (xhr.readyState===4) {
-            //alert(xhr.responseText);
-            if (xhr.responseText==0) {
-                insertUser();
-            }else{
-                alert("El correo ya esta registrado");
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "ServletValidateCorreo?email=" + email, true);
+
+    var email = document.getElementById("txtemail").value;
+
+    var exp = /@/g;
+    var rta = exp.test(email);
+    if (rta) {
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                //alert(xhr.responseText);
+                if (xhr.responseText == 0) {
+                    insertUser();
+
+                } else {
+                    alert("El correo ya esta registrado");
+                }
+
             }
-            
+        };
+        xhr.send(null);
+    }else{
+        alert("Dirección de correo no valida");
+    }
+}
+function validateId() {
+    var id = document.getElementById("txtid").value;
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "ValidateId?id=" + id, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            //alert(xhr.responseText);
+            if (xhr.responseText == 0) {
+                validateCorreo();
+
+            } else {
+                alert("El id ya esta registrado");
+            }
+
         }
     };
     xhr.send(null);
 }
 
-function insertUser(){
+function insertUser() {
     //alert("insertar");
-        var id = document.getElementById("txtid").value;
-        
-        var nombre = document.getElementById("txtnombre").value;
-        var apellido = document.getElementById("txtapellido").value;
-        var email = document.getElementById("txtemail").value;
-        var pass = document.getElementById("txtpass").value;
-        var pass2 = document.getElementById("txtpass2").value;
-    if (pass===pass2) {
-        var xhr=new XMLHttpRequest();
-        xhr.open("GET","ServletInsert?id="+id+"&nombre="+nombre+"&apellido="+apellido+"&email="+email+"&pass="+pass);
-        xhr.onreadystatechange=function (){
-            if (xhr.readyState===4) {
+    var id = document.getElementById("txtid").value;
+
+    var nombre = document.getElementById("txtnombre").value;
+    var apellido = document.getElementById("txtapellido").value;
+    var email = document.getElementById("txtemail").value;
+    var pass = document.getElementById("txtpass").value;
+    var pass2 = document.getElementById("txtpass2").value;
+    if (pass === pass2) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "ServletInsert?id=" + id + "&nombre=" + nombre + "&apellido=" + apellido + "&email=" + email + "&pass=" + pass);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
                 alert("Insertado satisfactoriamente");
                 inicarSesion();
             }
         };
         xhr.send(null);
-    }else{
+    } else {
         alert("Las contraseñas no coinciden");
     }
-    
-    
+
+
 }
 
-function inicarSesion(){
-    var cont=document.getElementById("formNuevo");
-    cont.innerHTML="";
-    var title=document.createElement("h4");
+function inicarSesion() {
+    var cont = document.getElementById("formNuevo");
+    cont.innerHTML = "";
+    var title = document.createElement("h4");
     title.appendChild(document.createTextNode("Iniciar Sesión"));
     cont.appendChild(title);
-    var txt=document.createElement("input");
-    txt.setAttribute("id","email");
+    var txt = document.createElement("input");
+    txt.setAttribute("id", "email");
     cont.appendChild(document.createTextNode("Email: "));
     cont.appendChild(txt);
-    
-    txt=document.createElement("input");
-    txt.setAttribute("id","password");
-    txt.setAttribute("type","password");
+
+    txt = document.createElement("input");
+    txt.setAttribute("id", "password");
+    txt.setAttribute("type", "password");
     cont.appendChild(document.createTextNode("Password: "));
     cont.appendChild(txt);
-    
-    var btn=document.createElement("button");
+
+    var btn = document.createElement("button");
     btn.appendChild(document.createTextNode("Enviar"));
-    btn.setAttribute("onclick","validateUser()");
-    btn.setAttribute("class","waves-effect waves-light btn");
+    btn.setAttribute("onclick", "validateUser()");
+    btn.setAttribute("class", "waves-effect waves-light btn");
     cont.appendChild(btn);
 }
-function opcmenu(){
-    var cont=document.getElementById("mn");
-    cont.innerHTML="";
-    var op=document.createElement("li");
-    op.setAttribute("onclick","index.jsp");
-    var ref=document.createElement("a");
-    ref.setAttribute("href","logout.jsp");
+function opcmenu() {
+    var cont = document.getElementById("mn");
+    cont.innerHTML = "";
+    var op = document.createElement("li");
+    op.setAttribute("onclick", "index.jsp");
+    var ref = document.createElement("a");
+    ref.setAttribute("href", "logout.jsp");
     ref.appendChild(document.createTextNode("Cerrar Sesión"));
     op.appendChild(ref);
     cont.appendChild(op);
 }
 
-function opcmenu2(){
-    var cont=document.getElementById("mobile-demo");
-    cont.innerHTML="";
-    var op=document.createElement("li");
-    op.setAttribute("onclick","index.jsp");
-    var ref=document.createElement("a");
-    ref.setAttribute("href","logout.jsp");
+function opcmenu2() {
+    var cont = document.getElementById("mobile-demo");
+    cont.innerHTML = "";
+    var op = document.createElement("li");
+    op.setAttribute("onclick", "index.jsp");
+    var ref = document.createElement("a");
+    ref.setAttribute("href", "logout.jsp");
     ref.appendChild(document.createTextNode("Cerrar Sesión"));
     op.appendChild(ref);
     cont.appendChild(op);

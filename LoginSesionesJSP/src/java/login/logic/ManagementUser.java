@@ -40,4 +40,8 @@ public class ManagementUser {
         return daoUser.correo(email);
     }
     
+    public int validateId(String id){
+        return daoUser.idUser(id);
+    }
+    
 }
